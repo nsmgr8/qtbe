@@ -1,0 +1,4 @@
+*.pyc
+.be/id-cache
+*.swp
+*~
