@@ -16,7 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Qt Bugs Everywhere.  If not, see <http://www.gnu.org/licenses/>.
 
-from PySide.QtGui import QMainWindow
+import os
+
+from PySide.QtGui import QMainWindow, QFileDialog
 
 from ui_mainwindow import Ui_MainWindow
 
@@ -26,22 +28,43 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
-        self.newCommentBox.setVisible(False)
-        self.newIssueBox.setVisible(False)
-        self.mainBox.setEnabled(False)
 
         self.action_New.triggered.connect(self.newProject)
         self.action_Open.triggered.connect(self.openProject)
         self.action_Close.triggered.connect(self.closeProject)
 
-    def newProject(self):
-        self.openProject()
+        self.project = None
 
-    def openProject(self):
-        self.mainBox.setEnabled(True)
-        self.label.setVisible(False)
+    def _get_project(self):
+        return self._project
+
+    def _set_project(self, path):
+        self._project = path
+        if not path:
+            self.projectTitle.setText('')
+            self.newCommentBox.setVisible(False)
+            self.newIssueBox.setVisible(False)
+            self._enable_controls(False)
+        else:
+            self.projectTitle.setText(path.split(os.path.sep)[-1])
+            self._enable_controls()
+    project = property(_get_project, _set_project)
+
+    def _enable_controls(self, value=True):
+        self.mainBox.setEnabled(value)
+        self.label.setVisible(not value)
+
+    def newProject(self):
+        self.openProject("Create a new project")
+
+    def openProject(self, title=None):
+        if not title:
+            self.openProject("Open a project")
+            return
+        path = QFileDialog.getExistingDirectory(self, title)
+        if path:
+            self.project = path
 
     def closeProject(self):
-        self.mainBox.setEnabled(False)
-        self.label.setVisible(True)
+        self.project = None
 
