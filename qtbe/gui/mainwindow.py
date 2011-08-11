@@ -18,9 +18,11 @@
 
 import os
 
-from PySide.QtGui import QMainWindow, QFileDialog
+from PySide.QtGui import QMainWindow, QFileDialog, QMessageBox
 
 from ui_mainwindow import Ui_MainWindow
+
+from libbe import storage
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -55,15 +57,39 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.label.setVisible(not value)
 
     def newProject(self):
-        self.openProject("Create a new project")
+        self.openProject(is_new=True)
 
-    def openProject(self, title=None):
-        if not title:
-            self.openProject("Open a project")
-            return
+    def openProject(self, is_new=False):
+        title = is_new and 'Create new project' or 'Open project'
         path = QFileDialog.getExistingDirectory(self, title)
         if path:
+            self._open_store(path, is_new)
+
+    def _open_store(self, path, is_new=False):
+        store = storage.get_storage(path)
+        try:
+            if is_new:
+                store.init()
+            else:
+                store.connect()
+            version = store.version()
+            if version == '0':
+                version = 'None'
+            self.vcsLabel.setText(version)
             self.project = path
+        except storage.ConnectionError as e:
+            print e
+            message = 'No project found. Would you like to initialize a new project?'
+        except OSError as e:
+            print e
+            message = 'Project already exists. Would you like to open instead?'
+        else:
+            message = None
+        if message:
+            answer = QMessageBox.question(self, self.windowTitle(), message,
+                                          QMessageBox.Ok | QMessageBox.Cancel)
+            if answer == QMessageBox.Ok:
+                self._open_store(path, not is_new)
 
     def closeProject(self):
         self.project = None
