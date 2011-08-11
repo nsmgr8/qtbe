@@ -68,7 +68,11 @@
             </widget>
            </item>
            <item row="1" column="0" colspan="3">
-            <widget class="QTableView" name="issueTable"/>
+            <widget class="QTableView" name="issueTable">
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
            <item row="2" column="0" colspan="3">
             <widget class="QGroupBox" name="newIssueBox">

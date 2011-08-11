@@ -18,9 +18,10 @@
 
 import os
 
-from PySide.QtGui import QMainWindow, QFileDialog, QMessageBox
+from PySide.QtGui import QMainWindow, QFileDialog, QMessageBox, QHeaderView, QAbstractItemView
 
 from ui_mainwindow import Ui_MainWindow
+from models import BugTableModel
 
 from libbe import storage
 from libbe import bugdir
@@ -39,6 +40,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.action_Close.triggered.connect(self.closeProject)
 
         self.project = None
+        self.model = BugTableModel()
+        self.issueTable.setModel(self.model)
+        self.issueTable.horizontalHeader().setResizeMode(1, QHeaderView.ResizeToContents)
+        self.issueTable.horizontalHeader().setResizeMode(2, QHeaderView.ResizeToContents)
+        self.issueTable.horizontalHeader().setResizeMode(0, QHeaderView.Stretch)
+        self.issueTable.horizontalHeader().setMinimumSectionSize(60)
+        self.issueTable.setSelectionBehavior(QAbstractItemView.SelectRows)
 
     def _get_project(self):
         return self._project
@@ -101,13 +109,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def reload_bugs(self):
         self.bd.load_all_bugs()
-        assignees = list(set([unicode(bug.assigned) for bug in self.bd if
+        self.model.bugs = list(self.bd)
+
+        assignees = list(set([unicode(bug.assigned) for bug in self.model.bugs if
             bug.assigned != EMPTY]))
         assignees.sort(key=unicode.lower)
-        targets = list(set([unicode(bug.summary.rstrip("\n")) for bug in
-            self.bd if bug.severity == u"target"]))
-        targets.sort(key=unicode.lower)
+        self.assignedCombo.clear()
         self.assignedCombo.addItems([''] + assignees)
+
+        targets = list(set([unicode(bug.summary) for bug in self.model.bugs if
+            bug.severity == u"target"]))
+        targets.sort(key=unicode.lower)
+        self.milestoneCombo.clear()
         self.milestoneCombo.addItems([''] + targets)
 
     def closeProject(self):
