@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtbe/resources/mainwindow.ui'
 #
-# Created: Thu Aug 11 18:27:10 2011
+# Created: Thu Aug 11 19:34:53 2011
 #      by: pyside-uic 0.2.9 running on PySide 1.0.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -208,9 +208,9 @@ class Ui_MainWindow(object):
         self.label_6.setFont(font)
         self.label_6.setObjectName("label_6")
         self.horizontalLayout_6.addWidget(self.label_6)
-        self.milestoneLabel = QtGui.QComboBox(self.issueDetailsBox)
-        self.milestoneLabel.setObjectName("milestoneLabel")
-        self.horizontalLayout_6.addWidget(self.milestoneLabel)
+        self.milestoneCombo = QtGui.QComboBox(self.issueDetailsBox)
+        self.milestoneCombo.setObjectName("milestoneCombo")
+        self.horizontalLayout_6.addWidget(self.milestoneCombo)
         self.gridLayout_2.addLayout(self.horizontalLayout_6, 3, 2, 1, 1)
         self.horizontalLayout_7 = QtGui.QHBoxLayout()
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")

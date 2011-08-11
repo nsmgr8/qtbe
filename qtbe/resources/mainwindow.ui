@@ -407,7 +407,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="milestoneLabel"/>
+                 <widget class="QComboBox" name="milestoneCombo"/>
                 </item>
                </layout>
               </item>

@@ -23,7 +23,10 @@ from PySide.QtGui import QMainWindow, QFileDialog, QMessageBox
 from ui_mainwindow import Ui_MainWindow
 
 from libbe import storage
+from libbe import bugdir
 
+
+EMPTY = storage.util.settings_object.EMPTY
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
@@ -72,11 +75,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 store.init()
             else:
                 store.connect()
+            if self.project:
+                self.closeProject()
             version = store.version()
-            if version == '0':
-                version = 'None'
-            self.vcsLabel.setText(version)
+            self.vcsLabel.setText('None' if version == '0' else version)
+            try:
+                self.bd = bugdir.BugDir(store, from_storage=True)
+            except:
+                self.bd = bugdir.BugDir(store, from_storage=False)
             self.project = path
+            self.reload_bugs()
         except storage.ConnectionError as e:
             print e
             message = 'No project found. Would you like to initialize a new project?'
@@ -91,6 +99,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if answer == QMessageBox.Ok:
                 self._open_store(path, not is_new)
 
+    def reload_bugs(self):
+        self.bd.load_all_bugs()
+        assignees = list(set([unicode(bug.assigned) for bug in self.bd if
+            bug.assigned != EMPTY]))
+        assignees.sort(key=unicode.lower)
+        targets = list(set([unicode(bug.summary.rstrip("\n")) for bug in
+            self.bd if bug.severity == u"target"]))
+        targets.sort(key=unicode.lower)
+        self.assignedCombo.addItems([''] + assignees)
+        self.milestoneCombo.addItems([''] + targets)
+
     def closeProject(self):
         self.project = None
+        self.assignedCombo.clear()
+        self.milestoneCombo.clear()
 
