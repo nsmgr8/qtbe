@@ -49,19 +49,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.action_New.triggered.connect(self.newProject)
         self.action_Open.triggered.connect(self.openProject)
         self.action_Close.triggered.connect(self.closeProject)
-        self.saveIssueButton.clicked.connect(self.create_issue)
+        self.saveBugButton.clicked.connect(self.create_bug)
         self.saveCommentButton.clicked.connect(self.add_comment)
         self.discardDetailsButton.clicked.connect(self.display_bug)
 
         self.project = None
         self.model = BugTableModel()
-        self.issueTable.setModel(self.model)
-        self.issueTable.horizontalHeader().setResizeMode(1, QHeaderView.ResizeToContents)
-        self.issueTable.horizontalHeader().setResizeMode(2, QHeaderView.ResizeToContents)
-        self.issueTable.horizontalHeader().setResizeMode(0, QHeaderView.Stretch)
-        self.issueTable.horizontalHeader().setMinimumSectionSize(60)
-        self.issueTable.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.issueTable.selectionModel().selectionChanged.connect(self.select_bug)
+        self.bugTable.setModel(self.model)
+        self.bugTable.horizontalHeader().setResizeMode(1, QHeaderView.ResizeToContents)
+        self.bugTable.horizontalHeader().setResizeMode(2, QHeaderView.ResizeToContents)
+        self.bugTable.horizontalHeader().setResizeMode(0, QHeaderView.Stretch)
+        self.bugTable.horizontalHeader().setMinimumSectionSize(60)
+        self.bugTable.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.bugTable.selectionModel().selectionChanged.connect(self.select_bug)
 
     def _get_project(self):
         return self._project
@@ -71,7 +71,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if not path:
             self.projectTitle.setText('')
             self.newCommentBox.setVisible(False)
-            self.newIssueBox.setVisible(False)
+            self.newBugBox.setVisible(False)
             self._enable_controls(False)
         else:
             self.projectTitle.setText(path.split(os.path.sep)[-1])
@@ -96,7 +96,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.project = None
         self.model.bugs = []
         self.enable_bug_view(False)
-        self.newIssueButton.setChecked(False)
+        self.newBugButton.setChecked(False)
         self.assignedCombo.clear()
         self.milestoneCombo.clear()
 
@@ -161,13 +161,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.addCommentButton.setEnabled(enable)
         self.saveDetailsButton.setEnabled(enable)
         self.discardDetailsButton.setEnabled(enable)
-        self.issueTitle.setText('')
+        self.bugTitle.setText('')
         self.shortLabel.setText('')
         self.idLabel.setText('')
         self.creatorLabel.setText('')
         self.createdLabel.setText('')
         self.reporterLabel.setText('')
-        self.issueCommentBrowser.setHtml('')
+        self.bugCommentBrowser.setHtml('')
         self.assignedCombo.setCurrentIndex(0)
         self.milestoneCombo.setCurrentIndex(0)
         self.addCommentButton.setChecked(False)
@@ -178,7 +178,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             bug = self.current_bug
         self.enable_bug_view()
-        self.issueTitle.setText(bug.summary)
+        self.bugTitle.setText(bug.summary)
         self.shortLabel.setText(bug.id.user())
         self.idLabel.setText(bug.uuid)
         self.creatorLabel.setText(bug.creator)
@@ -207,22 +207,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         comments = '<hr />'.join([self._comment_html(c) for c in bug.comments()])
         if not comments:
             comments = '<i>No comment yet!</i>'
-        self.issueCommentBrowser.setHtml(comments)
+        self.bugCommentBrowser.setHtml(comments)
 
     def _comment_html(self, comment):
         commenter = '<h4>' + unicode(comment.author) + ' said:</h4>'
         time = '<h5>on ' + handy_time(comment.time) + '</h5>'
         return commenter + plaintext2html(comment.body) + time
 
-    def create_issue(self):
-        summary = self.newIssueEdit.text().strip()
+    def create_bug(self):
+        summary = self.newBugEdit.text().strip()
         if summary:
             bug = self.bd.new_bug(summary=summary)
             bug.creator = self.user
             bug.reporter = self.user
             self.reload_bugs()
             self.display_bug(bug)
-            self.newIssueEdit.setText('')
+            self.newBugEdit.setText('')
 
     def add_comment(self):
         body = self.newCommentEdit.toPlainText().strip()

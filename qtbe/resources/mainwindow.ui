@@ -63,21 +63,21 @@
            <item row="0" column="0">
             <widget class="QLabel" name="label_8">
              <property name="text">
-              <string>Issues</string>
+              <string>Bugs</string>
              </property>
             </widget>
            </item>
            <item row="1" column="0" colspan="3">
-            <widget class="QTableView" name="issueTable">
+            <widget class="QTableView" name="bugTable">
              <property name="alternatingRowColors">
               <bool>true</bool>
              </property>
             </widget>
            </item>
            <item row="2" column="0" colspan="3">
-            <widget class="QGroupBox" name="newIssueBox">
+            <widget class="QGroupBox" name="newBugBox">
              <property name="title">
-              <string>Create Issue</string>
+              <string>Create Bug</string>
              </property>
              <layout class="QGridLayout" name="newCommentGrid_2">
               <item row="1" column="0">
@@ -94,22 +94,22 @@
                </spacer>
               </item>
               <item row="1" column="1">
-               <widget class="QPushButton" name="saveIssueButton">
+               <widget class="QPushButton" name="saveBugButton">
                 <property name="text">
-                 <string>Save Issue</string>
+                 <string>Save Bug</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="0" colspan="2">
-               <widget class="QLineEdit" name="newIssueEdit"/>
+               <widget class="QLineEdit" name="newBugEdit"/>
               </item>
              </layout>
             </widget>
            </item>
            <item row="3" column="0">
-            <widget class="QPushButton" name="newIssueButton">
+            <widget class="QPushButton" name="newBugButton">
              <property name="text">
-              <string>New Issue</string>
+              <string>New Bug</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -164,7 +164,7 @@
             </spacer>
            </item>
            <item row="0" column="1">
-            <widget class="QComboBox" name="issueSortCombo"/>
+            <widget class="QComboBox" name="bugSortCombo"/>
            </item>
           </layout>
          </widget>
@@ -173,7 +173,7 @@
            <item>
             <layout class="QVBoxLayout" name="verticalLayout">
              <item>
-              <widget class="QLabel" name="issueTitle">
+              <widget class="QLabel" name="bugTitle">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -183,12 +183,12 @@
                 </font>
                </property>
                <property name="text">
-                <string>Issue Title</string>
+                <string>Bug Title</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QTextBrowser" name="issueCommentBrowser">
+              <widget class="QTextBrowser" name="bugCommentBrowser">
                <property name="openExternalLinks">
                 <bool>true</bool>
                </property>
@@ -197,9 +197,9 @@
             </layout>
            </item>
            <item>
-            <widget class="QGroupBox" name="issueDetailsBox">
+            <widget class="QGroupBox" name="bugDetailsBox">
              <property name="title">
-              <string>Issue Details</string>
+              <string>Bug Details</string>
              </property>
              <property name="flat">
               <bool>false</bool>
@@ -544,7 +544,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;No project is open.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;Please create a new project&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;or open an exisiting project&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;to view/edit/track your issues.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;to view/edit/track your bugs.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
@@ -615,11 +615,11 @@ p, li { white-space: pre-wrap; }
   </action>
  </widget>
  <tabstops>
-  <tabstop>issueTable</tabstop>
-  <tabstop>newIssueButton</tabstop>
-  <tabstop>newIssueEdit</tabstop>
-  <tabstop>saveIssueButton</tabstop>
-  <tabstop>issueCommentBrowser</tabstop>
+  <tabstop>bugTable</tabstop>
+  <tabstop>newBugButton</tabstop>
+  <tabstop>newBugEdit</tabstop>
+  <tabstop>saveBugButton</tabstop>
+  <tabstop>bugCommentBrowser</tabstop>
   <tabstop>statusCombo</tabstop>
   <tabstop>severityCombo</tabstop>
   <tabstop>milestoneCombo</tabstop>
@@ -630,7 +630,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>newCommentEdit</tabstop>
   <tabstop>saveCommentButton</tabstop>
   <tabstop>cancelComment</tabstop>
-  <tabstop>issueSortCombo</tabstop>
+  <tabstop>bugSortCombo</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -651,9 +651,9 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>newIssueButton</sender>
+   <sender>newBugButton</sender>
    <signal>toggled(bool)</signal>
-   <receiver>newIssueBox</receiver>
+   <receiver>newBugBox</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -685,7 +685,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>addCommentButton</sender>
    <signal>toggled(bool)</signal>
-   <receiver>issueDetailsBox</receiver>
+   <receiver>bugDetailsBox</receiver>
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -699,9 +699,9 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>newIssueEdit</sender>
+   <sender>newBugEdit</sender>
    <signal>returnPressed()</signal>
-   <receiver>saveIssueButton</receiver>
+   <receiver>saveBugButton</receiver>
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
