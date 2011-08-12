@@ -26,7 +26,6 @@ from qtbe.utils import plaintext2html
 
 from libbe import storage, bug, bugdir
 from libbe.command.depend import get_blocks
-from libbe.command.util import bug_comment_from_user_id
 from libbe.util.utility import handy_time
 from libbe.ui.util.user import get_user_id
 
@@ -52,6 +51,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.action_Close.triggered.connect(self.closeProject)
         self.saveIssueButton.clicked.connect(self.create_issue)
         self.saveCommentButton.clicked.connect(self.add_comment)
+        self.discardDetailsButton.clicked.connect(self.display_bug)
 
         self.project = None
         self.model = BugTableModel()

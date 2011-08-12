@@ -60,7 +60,7 @@
          </property>
          <widget class="QWidget" name="layoutWidget">
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="0" colspan="2">
+           <item row="0" column="0">
             <widget class="QLabel" name="label_8">
              <property name="text">
               <string>Issues</string>
@@ -116,28 +116,6 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
-            <widget class="QPushButton" name="addCommentButton">
-             <property name="text">
-              <string>Add Comment &gt;&gt;</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-             <property name="default">
-              <bool>false</bool>
-             </property>
-             <property name="flat">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QComboBox" name="issueSortCombo"/>
-           </item>
            <item row="4" column="0">
             <widget class="QLabel" name="label_13">
              <property name="font">
@@ -155,7 +133,7 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="1" colspan="2">
+           <item row="4" column="1">
             <widget class="QLabel" name="vcsLabel">
              <property name="font">
               <font>
@@ -184,6 +162,9 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="issueSortCombo"/>
            </item>
           </layout>
          </widget>
@@ -459,6 +440,25 @@
                 </property>
                </widget>
               </item>
+              <item row="4" column="2">
+               <widget class="QPushButton" name="addCommentButton">
+                <property name="text">
+                 <string>Add Comment</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+                <property name="default">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -488,7 +488,7 @@
                 </property>
                </spacer>
               </item>
-              <item row="1" column="1">
+              <item row="1" column="2">
                <widget class="QPushButton" name="saveCommentButton">
                 <property name="font">
                  <font>
@@ -501,13 +501,26 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="0" colspan="2">
+              <item row="0" column="0" colspan="3">
                <widget class="QTextEdit" name="newCommentEdit">
                 <property name="font">
                  <font>
                   <weight>50</weight>
                   <bold>false</bold>
                  </font>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="cancelComment">
+                <property name="font">
+                 <font>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Cancel</string>
                 </property>
                </widget>
               </item>
@@ -601,6 +614,24 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>issueTable</tabstop>
+  <tabstop>newIssueButton</tabstop>
+  <tabstop>newIssueEdit</tabstop>
+  <tabstop>saveIssueButton</tabstop>
+  <tabstop>issueCommentBrowser</tabstop>
+  <tabstop>statusCombo</tabstop>
+  <tabstop>severityCombo</tabstop>
+  <tabstop>milestoneCombo</tabstop>
+  <tabstop>assignedCombo</tabstop>
+  <tabstop>saveDetailsButton</tabstop>
+  <tabstop>discardDetailsButton</tabstop>
+  <tabstop>addCommentButton</tabstop>
+  <tabstop>newCommentEdit</tabstop>
+  <tabstop>saveCommentButton</tabstop>
+  <tabstop>cancelComment</tabstop>
+  <tabstop>issueSortCombo</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -680,6 +711,22 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>224</x>
      <y>423</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelComment</sender>
+   <signal>clicked()</signal>
+   <receiver>addCommentButton</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>761</x>
+     <y>479</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>681</x>
+     <y>326</y>
     </hint>
    </hints>
   </connection>
