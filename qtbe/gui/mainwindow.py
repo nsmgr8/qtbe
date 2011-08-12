@@ -129,7 +129,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def reload_bugs(self):
         self.bd.load_all_bugs()
-        self.model.bugs = list(self.bd)
+        bugs = list(self.bd)
+        bugs.sort(key=lambda x: x.severity)
+        self.model.bugs = bugs
 
         assignees = list(set([unicode(bug.assigned) for bug in self.model.bugs if
             bug.assigned != EMPTY]))
