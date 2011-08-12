@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtbe/resources/mainwindow.ui'
 #
-# Created: Fri Aug 12 13:57:28 2011
+# Created: Fri Aug 12 17:22:10 2011
 #      by: pyside-uic 0.2.9 running on PySide 1.0.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -71,8 +71,6 @@ class Ui_MainWindow(object):
         self.newIssueButton.setCheckable(True)
         self.newIssueButton.setObjectName("newIssueButton")
         self.gridLayout_3.addWidget(self.newIssueButton, 3, 0, 1, 1)
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_3.addItem(spacerItem1, 3, 1, 1, 1)
         self.addCommentButton = QtGui.QPushButton(self.layoutWidget)
         self.addCommentButton.setCheckable(True)
         self.addCommentButton.setChecked(False)
@@ -118,9 +116,10 @@ class Ui_MainWindow(object):
         self.issueTitle.setFont(font)
         self.issueTitle.setObjectName("issueTitle")
         self.verticalLayout.addWidget(self.issueTitle)
-        self.issueCommentList = QtGui.QListWidget(self.layoutWidget1)
-        self.issueCommentList.setObjectName("issueCommentList")
-        self.verticalLayout.addWidget(self.issueCommentList)
+        self.issueCommentBrowser = QtGui.QTextBrowser(self.layoutWidget1)
+        self.issueCommentBrowser.setOpenExternalLinks(True)
+        self.issueCommentBrowser.setObjectName("issueCommentBrowser")
+        self.verticalLayout.addWidget(self.issueCommentBrowser)
         self.verticalLayout_2.addLayout(self.verticalLayout)
         self.issueDetailsBox = QtGui.QGroupBox(self.layoutWidget1)
         self.issueDetailsBox.setFlat(False)
@@ -267,8 +266,8 @@ class Ui_MainWindow(object):
         self.newCommentBox.setObjectName("newCommentBox")
         self.newCommentGrid = QtGui.QGridLayout(self.newCommentBox)
         self.newCommentGrid.setObjectName("newCommentGrid")
-        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.newCommentGrid.addItem(spacerItem2, 1, 0, 1, 1)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.newCommentGrid.addItem(spacerItem1, 1, 0, 1, 1)
         self.saveCommentButton = QtGui.QPushButton(self.newCommentBox)
         font = QtGui.QFont()
         font.setWeight(50)
@@ -320,6 +319,7 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.action_Quit, QtCore.SIGNAL("triggered()"), MainWindow.close)
         QtCore.QObject.connect(self.newIssueButton, QtCore.SIGNAL("toggled(bool)"), self.newIssueBox.setVisible)
         QtCore.QObject.connect(self.addCommentButton, QtCore.SIGNAL("toggled(bool)"), self.newCommentBox.setVisible)
+        QtCore.QObject.connect(self.addCommentButton, QtCore.SIGNAL("toggled(bool)"), self.issueDetailsBox.setHidden)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

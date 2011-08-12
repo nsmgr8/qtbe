@@ -22,8 +22,10 @@ from PySide.QtGui import QMainWindow, QFileDialog, QMessageBox, QHeaderView, QAb
 
 from ui_mainwindow import Ui_MainWindow
 from models import BugTableModel
+from qtbe.utils import plaintext2html
 
 from libbe import storage, bug, bugdir
+from libbe.command.depend import get_blocks
 from libbe.command.util import bug_comment_from_user_id
 from libbe.util.utility import handy_time
 
@@ -71,11 +73,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.projectTitle.setText(path.split(os.path.sep)[-1])
             self._enable_controls()
+        self.enable_bug_view(False)
     project = property(_get_project, _set_project)
 
-    def _enable_controls(self, value=True):
-        self.mainBox.setEnabled(value)
-        self.label.setVisible(not value)
+    def _enable_controls(self, enable=True):
+        self.mainBox.setEnabled(enable)
+        self.label.setVisible(not enable)
 
     def newProject(self):
         self.openProject(is_new=True)
@@ -83,8 +86,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def openProject(self, is_new=False):
         title = is_new and 'Create new project' or 'Open project'
         path = QFileDialog.getExistingDirectory(self, title)
-        if path:
+        if path and self.project != path:
             self._open_store(path, is_new)
+
+    def closeProject(self):
+        self.project = None
+        self.model.bugs = []
+        self.enable_bug_view(False)
+        self.assignedCombo.clear()
+        self.milestoneCombo.clear()
 
     def _open_store(self, path, is_new=False):
         store = storage.get_storage(path)
@@ -133,33 +143,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.milestoneCombo.clear()
         self.milestoneCombo.addItems([''] + targets)
 
-    def closeProject(self):
-        self.project = None
-        self.enable_bug(False)
-        self.assignedCombo.clear()
-        self.milestoneCombo.clear()
-
     def select_bug(self, new, old):
         try:
             bug = self.model.bugs[new.indexes()[0].row()]
             self.display_bug(bug.id.long_user())
         except IndexError:
-            self.enable_bug(False)
+            self.enable_bug_view(False)
 
-    def enable_bug(self, enable=True):
+    def enable_bug_view(self, enable=True):
         self.addCommentButton.setEnabled(enable)
+        self.saveDetailsButton.setEnabled(enable)
+        self.discardDetailsButton.setEnabled(enable)
         self.issueTitle.setText('')
         self.shortLabel.setText('')
         self.idLabel.setText('')
         self.creatorLabel.setText('')
         self.createdLabel.setText('')
         self.reporterLabel.setText('')
+        self.issueCommentBrowser.setHtml('')
         self.assignedCombo.setCurrentIndex(0)
         self.milestoneCombo.setCurrentIndex(0)
         self.addCommentButton.setChecked(False)
 
     def display_bug(self, bugid):
-        self.enable_bug()
+        self.enable_bug_view()
         bug, comment = bug_comment_from_user_id(self.bd, bugid)
         self.issueTitle.setText(bug.summary)
         self.shortLabel.setText(bug.id.user())
@@ -167,14 +174,31 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.creatorLabel.setText(bug.creator)
         self.createdLabel.setText(handy_time(bug.time))
         self.reporterLabel.setText(bug.reporter)
+
+        target = ''
+        blocks = get_blocks(self.bd, bug)
+        for b in blocks:
+            blocker = self.bd.bug_from_uuid(b.uuid)
+            if blocker.severity == 'target':
+                target = blocker.summary
         combos = [
             (self.statusCombo, bug.status),
             (self.severityCombo, bug.severity),
             (self.assignedCombo, bug.assigned),
+            (self.milestoneCombo, target),
         ]
         self.assignedCombo.setCurrentIndex(0)
+        self.milestoneCombo.setCurrentIndex(0)
         for combo, field in combos:
             for i in range(combo.count()):
                 if combo.itemText(i) == field:
                     combo.setCurrentIndex(i)
+
+        comments = '<hr />'.join([self._comment_html(c) for c in bug.comments()])
+        self.issueCommentBrowser.setHtml(comments)
+
+    def _comment_html(self, comment):
+        commenter = '<h4>' + (comment.author or 'None') + ' said:</h4>'
+        time = '<h5>on ' + handy_time(comment.time) + '</h5>'
+        return commenter + plaintext2html(comment.body) + time
 

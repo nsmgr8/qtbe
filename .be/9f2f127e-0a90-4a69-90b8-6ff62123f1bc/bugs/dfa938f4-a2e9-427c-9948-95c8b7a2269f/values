@@ -10,7 +10,7 @@ reporter: Nasimul Haque <nasim.haque@gmail.com>
 severity: critical
 
 
-status: open
+status: fixed
 
 
 summary: show bug comments

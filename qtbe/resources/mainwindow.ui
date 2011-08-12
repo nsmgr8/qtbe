@@ -116,19 +116,6 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
            <item row="3" column="2">
             <widget class="QPushButton" name="addCommentButton">
              <property name="text">
@@ -207,7 +194,11 @@
               </widget>
              </item>
              <item>
-              <widget class="QListWidget" name="issueCommentList"/>
+              <widget class="QTextBrowser" name="issueCommentBrowser">
+               <property name="openExternalLinks">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -637,6 +628,22 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>514</x>
      <y>470</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addCommentButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>issueDetailsBox</receiver>
+   <slot>setHidden(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>204</x>
+     <y>467</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>608</x>
+     <y>267</y>
     </hint>
    </hints>
   </connection>
