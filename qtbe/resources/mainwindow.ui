@@ -310,7 +310,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>Milestone</string>
+                   <string>Target</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -318,7 +318,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="milestoneCombo"/>
+                 <widget class="QComboBox" name="targetCombo"/>
                 </item>
                </layout>
               </item>
@@ -622,7 +622,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>bugCommentBrowser</tabstop>
   <tabstop>statusCombo</tabstop>
   <tabstop>severityCombo</tabstop>
-  <tabstop>milestoneCombo</tabstop>
+  <tabstop>targetCombo</tabstop>
   <tabstop>assignedCombo</tabstop>
   <tabstop>saveDetailsButton</tabstop>
   <tabstop>discardDetailsButton</tabstop>

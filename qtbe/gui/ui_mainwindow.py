@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtbe/resources/mainwindow.ui'
 #
-# Created: Fri Aug 12 23:47:51 2011
+# Created: Sat Aug 13 01:56:14 2011
 #      by: pyside-uic 0.2.9 running on PySide 1.0.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -183,9 +183,9 @@ class Ui_MainWindow(object):
         self.label_6.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_6.setObjectName("label_6")
         self.horizontalLayout_6.addWidget(self.label_6)
-        self.milestoneCombo = QtGui.QComboBox(self.bugDetailsBox)
-        self.milestoneCombo.setObjectName("milestoneCombo")
-        self.horizontalLayout_6.addWidget(self.milestoneCombo)
+        self.targetCombo = QtGui.QComboBox(self.bugDetailsBox)
+        self.targetCombo.setObjectName("targetCombo")
+        self.horizontalLayout_6.addWidget(self.targetCombo)
         self.gridLayout_2.addLayout(self.horizontalLayout_6, 3, 2, 1, 1)
         self.horizontalLayout_7 = QtGui.QHBoxLayout()
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
@@ -342,8 +342,8 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.saveBugButton, self.bugCommentBrowser)
         MainWindow.setTabOrder(self.bugCommentBrowser, self.statusCombo)
         MainWindow.setTabOrder(self.statusCombo, self.severityCombo)
-        MainWindow.setTabOrder(self.severityCombo, self.milestoneCombo)
-        MainWindow.setTabOrder(self.milestoneCombo, self.assignedCombo)
+        MainWindow.setTabOrder(self.severityCombo, self.targetCombo)
+        MainWindow.setTabOrder(self.targetCombo, self.assignedCombo)
         MainWindow.setTabOrder(self.assignedCombo, self.saveDetailsButton)
         MainWindow.setTabOrder(self.saveDetailsButton, self.discardDetailsButton)
         MainWindow.setTabOrder(self.discardDetailsButton, self.addCommentButton)
@@ -366,7 +366,7 @@ class Ui_MainWindow(object):
         self.label_10.setText(QtGui.QApplication.translate("MainWindow", "ID:", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("MainWindow", "Status", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("MainWindow", "Severity", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("MainWindow", "Milestone", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setText(QtGui.QApplication.translate("MainWindow", "Target", None, QtGui.QApplication.UnicodeUTF8))
         self.label_7.setText(QtGui.QApplication.translate("MainWindow", "Assigned", None, QtGui.QApplication.UnicodeUTF8))
         self.saveDetailsButton.setText(QtGui.QApplication.translate("MainWindow", "Save Changes", None, QtGui.QApplication.UnicodeUTF8))
         self.discardDetailsButton.setText(QtGui.QApplication.translate("MainWindow", "Discard Changes", None, QtGui.QApplication.UnicodeUTF8))

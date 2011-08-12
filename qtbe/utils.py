@@ -19,6 +19,13 @@
 import re
 import cgi
 
+from libbe.util.utility import handy_time
+
+def comment_html(comment):
+    commenter = '<h4>' + unicode(comment.author) + ' said:</h4>'
+    time = '<h5>on ' + handy_time(comment.time) + '</h5>'
+    return commenter + plaintext2html(comment.body) + time
+
 def plaintext2html(text, tabstop=4):
     """
     Convert plain text to HTML

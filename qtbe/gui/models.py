@@ -35,7 +35,7 @@ class BugTableModel(QAbstractTableModel):
 
     @property
     def header(self):
-        return ('Title', 'Status', 'Severity', 'Assigned',) # 'Milestone')
+        return ('Title', 'Status', 'Severity', 'Assigned',)
 
     def load_data(self, bugs):
         self.bugs = bugs

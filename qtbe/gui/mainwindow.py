@@ -22,10 +22,10 @@ from PySide.QtGui import QMainWindow, QFileDialog, QMessageBox, QHeaderView, QAb
 
 from ui_mainwindow import Ui_MainWindow
 from models import BugTableModel
-from qtbe.utils import plaintext2html
+from qtbe.utils import comment_html
 
 from libbe import storage, bug, bugdir
-from libbe.command.depend import get_blocks
+from libbe.command.depend import get_blocks, add_block, remove_block
 from libbe.util.utility import handy_time
 from libbe.ui.util.user import get_user_id
 
@@ -51,6 +51,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.action_Close.triggered.connect(self.closeProject)
         self.saveBugButton.clicked.connect(self.create_bug)
         self.saveCommentButton.clicked.connect(self.add_comment)
+        self.saveDetailsButton.clicked.connect(self.save_detail)
         self.discardDetailsButton.clicked.connect(self.display_bug)
 
         self.project = None
@@ -98,7 +99,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.enable_bug_view(False)
         self.newBugButton.setChecked(False)
         self.assignedCombo.clear()
-        self.milestoneCombo.clear()
+        self.targetCombo.clear()
 
     def _open_store(self, path, is_new=False):
         store = storage.get_storage(path)
@@ -138,17 +139,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         bugs.sort(key=lambda x: x.severity)
         self.model.bugs = bugs
 
+        self.load_assignees()
+        self.load_targets()
+
+    def load_assignees(self):
         assignees = list(set([unicode(bug.assigned) for bug in self.model.bugs if
             bug.assigned and bug.assigned != EMPTY]))
-        assignees.sort(key=unicode.lower)
+        if len(assignees) > 0:
+            if self.user not in assignees:
+                assignees.append(self.user)
+            assignees.sort(key=unicode.lower)
+        else:
+            assignees = [self.user]
         self.assignedCombo.clear()
         self.assignedCombo.addItems([''] + assignees)
 
-        targets = list(set([unicode(bug.summary) for bug in self.model.bugs if
-            bug.severity == u"target"]))
+    def load_targets(self):
+        self.targets = [b for b in self.model.bugs if b.severity == "target"]
+        targets = [unicode(b.summary) for b in self.targets]
         targets.sort(key=unicode.lower)
-        self.milestoneCombo.clear()
-        self.milestoneCombo.addItems([''] + targets)
+        self.targetCombo.clear()
+        self.targetCombo.addItems([''] + targets)
 
     def select_bug(self, new, old):
         try:
@@ -169,7 +180,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.reporterLabel.setText('')
         self.bugCommentBrowser.setHtml('')
         self.assignedCombo.setCurrentIndex(0)
-        self.milestoneCombo.setCurrentIndex(0)
+        self.targetCombo.setCurrentIndex(0)
         self.addCommentButton.setChecked(False)
 
     def display_bug(self, bug=None):
@@ -185,7 +196,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.createdLabel.setText(handy_time(bug.time))
         self.reporterLabel.setText(bug.reporter)
 
+        self.load_combos()
+        self.load_comments()
+
+    def load_comments(self):
+        comments = '<hr />'.join([comment_html(c) for c in self.current_bug.comments()])
+        if not comments:
+            comments = '<i>No comment yet!</i>'
+        self.bugCommentBrowser.setHtml(comments)
+
+    def load_combos(self):
         target = ''
+        bug = self.current_bug
         blocks = get_blocks(self.bd, bug)
         for b in blocks:
             blocker = self.bd.bug_from_uuid(b.uuid)
@@ -195,24 +217,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             (self.statusCombo, bug.status),
             (self.severityCombo, bug.severity),
             (self.assignedCombo, bug.assigned),
-            (self.milestoneCombo, target),
+            (self.targetCombo, target),
         ]
         self.assignedCombo.setCurrentIndex(0)
-        self.milestoneCombo.setCurrentIndex(0)
+        self.targetCombo.setCurrentIndex(0)
         for combo, field in combos:
             for i in range(combo.count()):
                 if combo.itemText(i) == field:
                     combo.setCurrentIndex(i)
-
-        comments = '<hr />'.join([self._comment_html(c) for c in bug.comments()])
-        if not comments:
-            comments = '<i>No comment yet!</i>'
-        self.bugCommentBrowser.setHtml(comments)
-
-    def _comment_html(self, comment):
-        commenter = '<h4>' + unicode(comment.author) + ' said:</h4>'
-        time = '<h5>on ' + handy_time(comment.time) + '</h5>'
-        return commenter + plaintext2html(comment.body) + time
 
     def create_bug(self):
         summary = self.newBugEdit.text().strip()
@@ -223,6 +235,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.reload_bugs()
             self.display_bug(bug)
             self.newBugEdit.setText('')
+            self.statusbar.showMessage('A new bug {0} has been '
+                    'added'.format(self.current_bug.id.user()))
 
     def add_comment(self):
         body = self.newCommentEdit.toPlainText().strip()
@@ -232,4 +246,51 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.current_bug.save()
             self.display_bug()
             self.newCommentEdit.setPlainText('')
+            self.statusbar.showMessage('New comment added to '
+                    '{0}'.format(self.current_bug.id.user()))
+
+    def save_detail(self):
+        status = self.statusCombo.currentText()
+        severity = self.severityCombo.currentText()
+        assigned = self.assignedCombo.currentText()
+        target = self.targetCombo.currentText()
+
+        is_changed = False
+        if self.current_bug.status != status:
+            is_changed = True
+            self.current_bug.status = status
+        if self.current_bug.severity != severity:
+            is_changed = True
+            self.current_bug.severity = severity
+        if self.current_bug.assigned != assigned:
+            is_changed = True
+            self.current_bug.assigned = assigned
+
+        if is_changed:
+            self.current_bug.save()
+            self.model.reset()
+            self.load_targets()
+
+        def remove_all_targets():
+            for b in blocks:
+                if b.severity == 'target':
+                    remove_block(b, self.current_bug)
+
+        blocks = get_blocks(self.bd, self.current_bug)
+        if not target:
+            is_changed = True
+            remove_all_targets()
+        else:
+            for t in self.targets:
+                if t.summary == target:
+                    if t not in blocks:
+                        is_changed = True
+                        remove_all_targets()
+                        add_block(t, self.current_bug)
+                    break
+
+        if is_changed:
+            self.load_combos()
+            self.statusbar.showMessage('Changes to details for the bug {0} '
+                    'has been saved'.format(self.current_bug.id.user()))
 
