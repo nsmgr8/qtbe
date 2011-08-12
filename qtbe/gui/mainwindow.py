@@ -28,6 +28,7 @@ from libbe import storage, bug, bugdir
 from libbe.command.depend import get_blocks
 from libbe.command.util import bug_comment_from_user_id
 from libbe.util.utility import handy_time
+from libbe.ui.util.user import get_user_id
 
 
 EMPTY = storage.util.settings_object.EMPTY
@@ -49,6 +50,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.action_New.triggered.connect(self.newProject)
         self.action_Open.triggered.connect(self.openProject)
         self.action_Close.triggered.connect(self.closeProject)
+        self.saveIssueButton.clicked.connect(self.create_issue)
 
         self.project = None
         self.model = BugTableModel()
@@ -93,6 +95,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.project = None
         self.model.bugs = []
         self.enable_bug_view(False)
+        self.newIssueButton.setChecked(False)
         self.assignedCombo.clear()
         self.milestoneCombo.clear()
 
@@ -105,6 +108,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 store.connect()
             if self.project:
                 self.closeProject()
+            self.user = get_user_id(store)
             version = store.version()
             self.vcsLabel.setText('None' if version == '0' else version)
             try:
@@ -134,7 +138,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.model.bugs = bugs
 
         assignees = list(set([unicode(bug.assigned) for bug in self.model.bugs if
-            bug.assigned != EMPTY]))
+            bug.assigned and bug.assigned != EMPTY]))
         assignees.sort(key=unicode.lower)
         self.assignedCombo.clear()
         self.assignedCombo.addItems([''] + assignees)
@@ -148,7 +152,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def select_bug(self, new, old):
         try:
             bug = self.model.bugs[new.indexes()[0].row()]
-            self.display_bug(bug.id.long_user())
+            self.display_bug(bug)
         except IndexError:
             self.enable_bug_view(False)
 
@@ -167,9 +171,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.milestoneCombo.setCurrentIndex(0)
         self.addCommentButton.setChecked(False)
 
-    def display_bug(self, bugid):
+    def display_bug(self, bug):
         self.enable_bug_view()
-        bug, comment = bug_comment_from_user_id(self.bd, bugid)
         self.issueTitle.setText(bug.summary)
         self.shortLabel.setText(bug.id.user())
         self.idLabel.setText(bug.uuid)
@@ -197,10 +200,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     combo.setCurrentIndex(i)
 
         comments = '<hr />'.join([self._comment_html(c) for c in bug.comments()])
+        if not comments:
+            comments = '<i>No comment yet!</i>'
         self.issueCommentBrowser.setHtml(comments)
 
     def _comment_html(self, comment):
-        commenter = '<h4>' + (comment.author or 'None') + ' said:</h4>'
+        commenter = '<h4>' + unicode(comment.author) + ' said:</h4>'
         time = '<h5>on ' + handy_time(comment.time) + '</h5>'
         return commenter + plaintext2html(comment.body) + time
+
+    def create_issue(self):
+        summary = self.newIssueEdit.text().strip()
+        if summary:
+            bug = self.bd.new_bug(summary=summary)
+            bug.creator = self.user
+            bug.reporter = self.user
+            self.reload_bugs()
+            self.display_bug(bug.id.long_user())
+            self.newIssueEdit.setText('')
 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtbe/resources/mainwindow.ui'
 #
-# Created: Fri Aug 12 17:22:10 2011
+# Created: Fri Aug 12 20:57:24 2011
 #      by: pyside-uic 0.2.9 running on PySide 1.0.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -100,6 +100,8 @@ class Ui_MainWindow(object):
         self.vcsLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.vcsLabel.setObjectName("vcsLabel")
         self.gridLayout_3.addWidget(self.vcsLabel, 4, 1, 1, 2)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout_3.addItem(spacerItem1, 3, 1, 1, 1)
         self.layoutWidget1 = QtGui.QWidget(self.splitter)
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.layoutWidget1)
@@ -266,8 +268,8 @@ class Ui_MainWindow(object):
         self.newCommentBox.setObjectName("newCommentBox")
         self.newCommentGrid = QtGui.QGridLayout(self.newCommentBox)
         self.newCommentGrid.setObjectName("newCommentGrid")
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.newCommentGrid.addItem(spacerItem1, 1, 0, 1, 1)
+        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.newCommentGrid.addItem(spacerItem2, 1, 0, 1, 1)
         self.saveCommentButton = QtGui.QPushButton(self.newCommentBox)
         font = QtGui.QFont()
         font.setWeight(50)
