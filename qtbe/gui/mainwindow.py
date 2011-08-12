@@ -23,8 +23,9 @@ from PySide.QtGui import QMainWindow, QFileDialog, QMessageBox, QHeaderView, QAb
 from ui_mainwindow import Ui_MainWindow
 from models import BugTableModel
 
-from libbe import storage
-from libbe import bugdir
+from libbe import storage, bug, bugdir
+from libbe.command.util import bug_comment_from_user_id
+from libbe.util.utility import handy_time
 
 
 EMPTY = storage.util.settings_object.EMPTY
@@ -34,6 +35,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
+
+        self.statusCombo.addItems(bug.status_values)
+        self.severityCombo.addItems(bug.severity_values)
+        status_def = bug.active_status_def + bug.inactive_status_def
+        tooltip = '\n'.join([': '.join(s) for s in status_def])
+        self.statusCombo.setToolTip(tooltip)
+        tooltip = '\n'.join([': '.join(s) for s in bug.severity_def])
+        self.severityCombo.setToolTip(tooltip)
 
         self.action_New.triggered.connect(self.newProject)
         self.action_Open.triggered.connect(self.openProject)
@@ -47,6 +56,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.issueTable.horizontalHeader().setResizeMode(0, QHeaderView.Stretch)
         self.issueTable.horizontalHeader().setMinimumSectionSize(60)
         self.issueTable.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.issueTable.selectionModel().selectionChanged.connect(self.select_bug)
 
     def _get_project(self):
         return self._project
@@ -125,6 +135,46 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def closeProject(self):
         self.project = None
+        self.enable_bug(False)
         self.assignedCombo.clear()
         self.milestoneCombo.clear()
+
+    def select_bug(self, new, old):
+        try:
+            bug = self.model.bugs[new.indexes()[0].row()]
+            self.display_bug(bug.id.long_user())
+        except IndexError:
+            self.enable_bug(False)
+
+    def enable_bug(self, enable=True):
+        self.addCommentButton.setEnabled(enable)
+        self.issueTitle.setText('')
+        self.shortLabel.setText('')
+        self.idLabel.setText('')
+        self.creatorLabel.setText('')
+        self.createdLabel.setText('')
+        self.reporterLabel.setText('')
+        self.assignedCombo.setCurrentIndex(0)
+        self.milestoneCombo.setCurrentIndex(0)
+        self.addCommentButton.setChecked(False)
+
+    def display_bug(self, bugid):
+        self.enable_bug()
+        bug, comment = bug_comment_from_user_id(self.bd, bugid)
+        self.issueTitle.setText(bug.summary)
+        self.shortLabel.setText(bug.id.user())
+        self.idLabel.setText(bug.uuid)
+        self.creatorLabel.setText(bug.creator)
+        self.createdLabel.setText(handy_time(bug.time))
+        self.reporterLabel.setText(bug.reporter)
+        combos = [
+            (self.statusCombo, bug.status),
+            (self.severityCombo, bug.severity),
+            (self.assignedCombo, bug.assigned),
+        ]
+        self.assignedCombo.setCurrentIndex(0)
+        for combo, field in combos:
+            for i in range(combo.count()):
+                if combo.itemText(i) == field:
+                    combo.setCurrentIndex(i)
 
