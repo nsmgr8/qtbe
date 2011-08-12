@@ -502,7 +502,14 @@
                </widget>
               </item>
               <item row="0" column="0" colspan="2">
-               <widget class="QTextEdit" name="newCommentEdit"/>
+               <widget class="QTextEdit" name="newCommentEdit">
+                <property name="font">
+                 <font>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -657,6 +664,22 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>608</x>
      <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>newIssueEdit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>saveIssueButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>151</x>
+     <y>390</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>224</x>
+     <y>423</y>
     </hint>
    </hints>
   </connection>

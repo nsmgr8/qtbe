@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtbe/resources/mainwindow.ui'
 #
-# Created: Fri Aug 12 20:57:24 2011
+# Created: Fri Aug 12 21:41:53 2011
 #      by: pyside-uic 0.2.9 running on PySide 1.0.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -278,6 +278,10 @@ class Ui_MainWindow(object):
         self.saveCommentButton.setObjectName("saveCommentButton")
         self.newCommentGrid.addWidget(self.saveCommentButton, 1, 1, 1, 1)
         self.newCommentEdit = QtGui.QTextEdit(self.newCommentBox)
+        font = QtGui.QFont()
+        font.setWeight(50)
+        font.setBold(False)
+        self.newCommentEdit.setFont(font)
         self.newCommentEdit.setObjectName("newCommentEdit")
         self.newCommentGrid.addWidget(self.newCommentEdit, 0, 0, 1, 2)
         self.verticalLayout_2.addWidget(self.newCommentBox)
@@ -322,6 +326,7 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.newIssueButton, QtCore.SIGNAL("toggled(bool)"), self.newIssueBox.setVisible)
         QtCore.QObject.connect(self.addCommentButton, QtCore.SIGNAL("toggled(bool)"), self.newCommentBox.setVisible)
         QtCore.QObject.connect(self.addCommentButton, QtCore.SIGNAL("toggled(bool)"), self.issueDetailsBox.setHidden)
+        QtCore.QObject.connect(self.newIssueEdit, QtCore.SIGNAL("returnPressed()"), self.saveIssueButton.click)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

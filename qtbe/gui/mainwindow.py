@@ -51,6 +51,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.action_Open.triggered.connect(self.openProject)
         self.action_Close.triggered.connect(self.closeProject)
         self.saveIssueButton.clicked.connect(self.create_issue)
+        self.saveCommentButton.clicked.connect(self.add_comment)
 
         self.project = None
         self.model = BugTableModel()
@@ -171,7 +172,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.milestoneCombo.setCurrentIndex(0)
         self.addCommentButton.setChecked(False)
 
-    def display_bug(self, bug):
+    def display_bug(self, bug=None):
+        if bug:
+            self.current_bug = bug
+        else:
+            bug = self.current_bug
         self.enable_bug_view()
         self.issueTitle.setText(bug.summary)
         self.shortLabel.setText(bug.id.user())
@@ -216,6 +221,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             bug.creator = self.user
             bug.reporter = self.user
             self.reload_bugs()
-            self.display_bug(bug.id.long_user())
+            self.display_bug(bug)
             self.newIssueEdit.setText('')
+
+    def add_comment(self):
+        body = self.newCommentEdit.toPlainText().strip()
+        if body:
+            comment = self.current_bug.comment_root.new_reply(body=body)
+            comment.author = self.user
+            self.current_bug.save()
+            self.display_bug()
+            self.newCommentEdit.setPlainText('')
 
