@@ -16,7 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Qt Bugs Everywhere.  If not, see <http://www.gnu.org/licenses/>.
 
+"""A graphical user interface for the bug manager "Bugs Everywhere". This is a
+single window bug manager built on top of PySide, a Qt4 wrapper for python"""
+
+
 def main():
+    """Main entry to run the app"""
     import sys
     from PySide.QtGui import QApplication
     from gui.mainwindow import MainWindow

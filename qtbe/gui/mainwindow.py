@@ -34,8 +34,10 @@ from libbe.ui.util.user import get_user_id
 EMPTY = storage.util.settings_object.EMPTY
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+    """Main window of the app."""
 
     def __init__(self, parent=None):
+        """Initialize the window, setup connections, populate initial data."""
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
 
@@ -72,9 +74,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.bugTable.selectionModel().selectionChanged.connect(self.select_bug)
 
     def _get_project(self):
+        """Getter for project property"""
         return self._project
 
     def _set_project(self, path):
+        """Setter for project property"""
         self._project = path
         if not path:
             self.projectTitle.setText('')
@@ -85,22 +89,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.projectTitle.setText(path.split(os.path.sep)[-1])
             self._enable_controls()
         self.enable_bug_view(False)
-    project = property(_get_project, _set_project)
+    project = property(_get_project, _set_project, doc="the absolute path of the project")
 
     def _enable_controls(self, enable=True):
+        """Enable/disable UI for opened/closed project"""
         self.mainBox.setEnabled(enable)
         self.label.setVisible(not enable)
 
     def newProject(self):
+        """Open a new project"""
         self.openProject(is_new=True)
 
     def openProject(self, is_new=False):
+        """Open an existing project"""
         title = is_new and 'Create new project' or 'Open project'
         path = QFileDialog.getExistingDirectory(self, title)
         if path and self.project != path:
             self._open_store(path, is_new)
 
     def closeProject(self):
+        """Close a project"""
         self.project = None
         self.model.bugs = []
         self.enable_bug_view(False)
@@ -109,6 +117,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.targetCombo.clear()
 
     def _open_store(self, path, is_new=False):
+        """Open the store of the project, initialize the bugdir and load bugs"""
         store = storage.get_storage(path)
         try:
             if is_new:
@@ -139,6 +148,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self._open_store(path, not is_new)
 
     def reload_bugs(self, active=True):
+        """Load all the bugs filtering on active status"""
+        # FIXME: lazy loading of bugs should be considered
         self.bd.load_all_bugs()
         if active:
             filter_list = bug.status_values[:len(bug.active_status_def)]
@@ -154,6 +165,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.bugsLabel.setText(str(len(bugs)))
 
     def load_assignees(self):
+        """Find and save all assignees for this project including the current user"""
         assignees = list(set([unicode(bug.assigned) for bug in self.model.bugs if
             bug.assigned and bug.assigned != EMPTY]))
         if len(assignees) > 0:
@@ -166,6 +178,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.assignedCombo.addItems([''] + assignees)
 
     def load_targets(self):
+        """Load targets"""
         self.targets = [b for b in self.model.bugs if b.severity == "target"]
         targets = [unicode(b.summary) for b in self.targets]
         targets.sort(key=unicode.lower)
@@ -173,6 +186,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.targetCombo.addItems([''] + targets)
 
     def select_bug(self, new, old):
+        """Slot for the bugTable selection changes. ``old`` is unused for now
+        but required by Qt4 slot signature requirement.
+        """
         n_select = len(self.bugTable.selectedIndexes())
         n_column = len(self.model.header)
         try:
@@ -191,6 +207,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.removeBugButton.setEnabled(False)
 
     def select_current_bug(self, bug=None):
+        """A convenience method to select a bug in the table"""
         if bug:
             self.current_bug = bug
         row = self.model.bugs.index(self.current_bug)
@@ -199,6 +216,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.bugTable.selectRow(index.row())
 
     def enable_bug_view(self, enable=True):
+        """Enable/disable bug view"""
         self.addCommentButton.setEnabled(enable)
         self.saveDetailsButton.setEnabled(enable)
         self.discardDetailsButton.setEnabled(enable)
@@ -217,6 +235,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.current_bug = None
 
     def display_bug(self, bug=None):
+        """Display currently selected bug or the bug passed via argument"""
         if bug:
             self.current_bug = bug
         else:
@@ -233,12 +252,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.load_comments()
 
     def load_comments(self):
+        """Load all the comments for current bug"""
         comments = '<hr />'.join([comment_html(c) for c in self.current_bug.comments()])
         if not comments:
             comments = '<i>No comment yet!</i>'
         self.bugCommentBrowser.setHtml(comments)
 
     def load_combos(self):
+        """Update the combo boxes for bug properties"""
         if not self.current_bug:
             return
         target = ''
@@ -262,6 +283,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     combo.setCurrentIndex(i)
 
     def create_bug(self):
+        """Create a new bug"""
         summary = self.newBugEdit.text().strip()
         if summary:
             bug = self.bd.new_bug(summary=summary)
@@ -275,6 +297,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     'added'.format(self.current_bug.id.user()))
 
     def add_comment(self):
+        """Add a comment to the current bug. Comments are now flat, not threaded."""
         body = self.newCommentEdit.toPlainText().strip()
         if body:
             comment = self.current_bug.comment_root.new_reply(body=body)
@@ -286,6 +309,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     '{0}'.format(self.current_bug.id.user()))
 
     def save_detail(self):
+        """Save updated properties to the current bug"""
         status = self.statusCombo.currentText()
         severity = self.severityCombo.currentText()
         assigned = self.assignedCombo.currentText()
@@ -304,6 +328,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.load_targets()
 
         def remove_all_targets():
+            """remove all targets for a bug, b"""
             for b in blocks:
                 if b.severity == 'target':
                     remove_block(b, self.current_bug)
@@ -328,6 +353,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     'has been saved'.format(self.current_bug.id.user()))
 
     def bulk_update(self):
+        """Bulk update properties of selected bugs"""
         if not self.confirm_action('Are you sure to update all selected bugs?'):
             return
         indexes = set([self.proxy_model.mapToSource(index).row() for index in self.bugTable.selectedIndexes()])
@@ -365,6 +391,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.statusbar.showMessage('Updated all selected bugs')
 
     def remove_bug(self):
+        """Remove selected bugs from the project"""
         indexes = set([self.proxy_model.mapToSource(index).row() for index in self.bugTable.selectedIndexes()])
         bugs = [self.model.bugs[index] for index in indexes]
         if len(bugs) > 0 and not self.confirm_action('Are you sure to remove selected bugs?'):
@@ -379,10 +406,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.statusbar.showMessage('Removed %s bug(s)' % ', '.join(ids))
 
     def filter_bugs(self, value):
+        """Filter bugs on active status"""
         self.reload_bugs(value == 'active')
         self.enable_bug_view(False)
 
     def confirm_action(self, message):
+        """Convenient method for user confirmation on action"""
         result = QMessageBox.warning(self, self.windowTitle(), message, QMessageBox.Ok | QMessageBox.Cancel)
         return result == QMessageBox.Ok
 
