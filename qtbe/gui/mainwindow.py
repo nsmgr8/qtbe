@@ -18,7 +18,8 @@
 
 import os
 
-from PySide.QtGui import QMainWindow, QFileDialog, QMessageBox, QHeaderView, QAbstractItemView
+from PySide.QtGui import (QMainWindow, QFileDialog, QMessageBox, QHeaderView,
+                          QAbstractItemView, QSortFilterProxyModel)
 
 from ui_mainwindow import Ui_MainWindow
 from models import BugTableModel
@@ -60,7 +61,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.project = None
         self.model = BugTableModel()
-        self.bugTable.setModel(self.model)
+        self.proxy_model = QSortFilterProxyModel()
+        self.proxy_model.setSourceModel(self.model)
+        self.bugTable.setModel(self.proxy_model)
         self.bugTable.horizontalHeader().setResizeMode(1, QHeaderView.ResizeToContents)
         self.bugTable.horizontalHeader().setResizeMode(2, QHeaderView.ResizeToContents)
         self.bugTable.horizontalHeader().setResizeMode(0, QHeaderView.Stretch)
@@ -173,7 +176,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         n_select = len(self.bugTable.selectedIndexes())
         n_column = len(self.model.header)
         try:
-            bug = self.model.bugs[new.indexes()[0].row()]
+            index = self.proxy_model.mapToSource(new.indexes()[0])
+            bug = self.model.bugs[index.row()]
             if n_select > n_column:
                 self.enable_bug_view(False)
                 self.current_bug = None
@@ -190,7 +194,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if bug:
             self.current_bug = bug
         row = self.model.bugs.index(self.current_bug)
-        self.bugTable.selectRow(row)
+        index = self.model.index(row, 0)
+        index = self.proxy_model.mapFromSource(index)
+        self.bugTable.selectRow(index.row())
 
     def enable_bug_view(self, enable=True):
         self.addCommentButton.setEnabled(enable)
@@ -324,7 +330,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def bulk_update(self):
         if not self.confirm_action('Are you sure to update all selected bugs?'):
             return
-        indexes = set([index.row() for index in self.bugTable.selectedIndexes()])
+        indexes = set([self.proxy_model.mapToSource(index).row() for index in self.bugTable.selectedIndexes()])
         bugs = [self.model.bugs[index] for index in indexes]
 
         status = self.statusCombo.currentText()
@@ -359,7 +365,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.statusbar.showMessage('Updated all selected bugs')
 
     def remove_bug(self):
-        indexes = set([index.row() for index in self.bugTable.selectedIndexes()])
+        indexes = set([self.proxy_model.mapToSource(index).row() for index in self.bugTable.selectedIndexes()])
         bugs = [self.model.bugs[index] for index in indexes]
         if len(bugs) > 0 and not self.confirm_action('Are you sure to remove selected bugs?'):
             return

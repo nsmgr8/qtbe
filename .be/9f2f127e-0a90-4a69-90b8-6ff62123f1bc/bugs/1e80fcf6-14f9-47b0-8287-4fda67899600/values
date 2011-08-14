@@ -1,3 +1,6 @@
+assigned: Nasimul Haque <nasim.haque@gmail.com>
+
+
 creator: Nasimul Haque <nasim.haque@gmail.com>
 
 
@@ -7,7 +10,7 @@ reporter: Nasimul Haque <nasim.haque@gmail.com>
 severity: wishlist
 
 
-status: open
+status: fixed
 
 
 summary: sort bugs on column clicks

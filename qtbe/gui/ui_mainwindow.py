@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtbe/resources/mainwindow.ui'
 #
-# Created: Sun Aug 14 14:48:00 2011
+# Created: Sun Aug 14 14:56:58 2011
 #      by: pyside-uic 0.2.9 running on PySide 1.0.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -49,6 +49,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.bugTable = QtGui.QTableView(self.layoutWidget)
         self.bugTable.setAlternatingRowColors(True)
+        self.bugTable.setSortingEnabled(True)
         self.bugTable.setObjectName("bugTable")
         self.gridLayout_3.addWidget(self.bugTable, 1, 0, 1, 4)
         self.newBugBox = QtGui.QGroupBox(self.layoutWidget)
