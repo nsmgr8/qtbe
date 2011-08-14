@@ -22,7 +22,7 @@ from distutils.core import setup
 from qtbe import VERSION
 
 setup(
-    name='Qt Bugs Everywhere',
+    name='QtBE',
     version=VERSION,
     url='https://github.com/nsmgr8/qtbe',
     author='M Nasimul Haque',
