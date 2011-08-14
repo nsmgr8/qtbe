@@ -1,4 +1,11 @@
+assigned: ''
+
+
 creator: Nasimul Haque <nasim.haque@gmail.com>
+
+
+extra_strings:
+- BLOCKS:fae04e27-e146-4f85-afc3-1e9e9dc158f1
 
 
 reporter: Nasimul Haque <nasim.haque@gmail.com>
@@ -7,7 +14,7 @@ reporter: Nasimul Haque <nasim.haque@gmail.com>
 severity: minor
 
 
-status: open
+status: fixed
 
 
 summary: add README

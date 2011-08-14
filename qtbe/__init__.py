@@ -20,6 +20,8 @@
 single window bug manager built on top of PySide, a Qt4 wrapper for python"""
 
 
+VERSION = '0.1'
+
 def main():
     """Main entry to run the app"""
     import sys

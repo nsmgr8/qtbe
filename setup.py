@@ -19,12 +19,23 @@
 
 from distutils.core import setup
 
+from qtbe import VERSION
+
 setup(
     name='Qt Bugs Everywhere',
-    version='0.1a',
+    version=VERSION,
+    url='https://github.com/nsmgr8/qtbe',
+    author='M Nasimul Haque',
+    author_email='nasim.haque@gmail.com',
     description='Graphical user interface for bugtracker "Bugs Everywhere" supporting distributed revision control',
-    url='http://bugseverywhere.org/',
     packages=['qtbe', 'qtbe.gui'],
     scripts=['qtbeapp'],
+    classifiers=['Development Status :: 3 - Alpha',
+                 'Environment :: X11 Applications :: Qt',
+                 'Intended Audience :: Developers',
+                 'License :: OSI Approved :: GNU General Public License (GPL)',
+                 'Operating System :: OS Independent',
+                 'Topic :: Software Development :: Bug Tracking',
+    ],
 )
 
