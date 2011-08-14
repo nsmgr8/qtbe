@@ -50,6 +50,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.action_New.triggered.connect(self.newProject)
         self.action_Open.triggered.connect(self.openProject)
         self.action_Close.triggered.connect(self.closeProject)
+        self.bugFilterCombo.currentIndexChanged.connect(self.filter_bugs)
         self.saveBugButton.clicked.connect(self.create_bug)
         self.saveCommentButton.clicked.connect(self.add_comment)
         self.saveDetailsButton.clicked.connect(self.save_detail)
@@ -135,21 +136,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if answer == QMessageBox.Ok:
                 self._open_store(path, not is_new)
 
-    def reload_bugs(self):
+    def reload_bugs(self, active=True):
         self.bd.load_all_bugs()
-        bugs = list(self.bd)
+        if active:
+            filter_list = bug.status_values[:len(bug.active_status_def)]
+        else:
+            filter_list = bug.status_values[len(bug.active_status_def):]
+        bugs = [b for b in self.bd if b.status in filter_list]
         bugs.sort(key=lambda x: x.severity)
         self.model.bugs = bugs
+        self.current_bug = None
 
         self.load_assignees()
         self.load_targets()
-        n = len(bugs)
-        if n == 0:
-            self.bugsLabel.setText('No bug found')
-        elif n == 1:
-            self.bugsLabel.setText('One bug listed')
-        else:
-            self.bugsLabel.setText('Showing {0} bugs'.format(n))
+        self.bugsLabel.setText(str(len(bugs)))
 
     def load_assignees(self):
         assignees = list(set([unicode(bug.assigned) for bug in self.model.bugs if
@@ -203,6 +203,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.assignedCombo.setCurrentIndex(0)
         self.targetCombo.setCurrentIndex(0)
         self.addCommentButton.setChecked(False)
+        if not enable:
+            self.current_bug = None
 
     def display_bug(self, bug=None):
         if bug:
@@ -323,4 +325,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.reload_bugs()
         self.enable_bug_view(False)
         self.statusbar.showMessage('Removed %s bug(s)' % ', '.join(ids))
+
+    def filter_bugs(self, value):
+        self.reload_bugs(value == 'active')
+        self.enable_bug_view(False)
 

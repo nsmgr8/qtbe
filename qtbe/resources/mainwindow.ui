@@ -60,13 +60,6 @@
          </property>
          <widget class="QWidget" name="layoutWidget">
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="0">
-            <widget class="QLabel" name="bugsLabel">
-             <property name="text">
-              <string>Bugs</string>
-             </property>
-            </widget>
-           </item>
            <item row="1" column="0" colspan="4">
             <widget class="QTableView" name="bugTable">
              <property name="alternatingRowColors">
@@ -146,9 +139,6 @@
              </property>
             </spacer>
            </item>
-           <item row="0" column="2">
-            <widget class="QComboBox" name="bugSortCombo"/>
-           </item>
            <item row="3" column="1">
             <widget class="QPushButton" name="removeBugButton">
              <property name="enabled">
@@ -175,6 +165,58 @@
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
+           </item>
+           <item row="0" column="0" colspan="3">
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <item>
+              <widget class="QLabel" name="bugsLabel_3">
+               <property name="text">
+                <string>Showing</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="bugsLabel">
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="bugFilterCombo">
+               <item>
+                <property name="text">
+                 <string>active</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>inactive</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="bugsLabel_2">
+               <property name="text">
+                <string>bugs</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -640,7 +682,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>newCommentEdit</tabstop>
   <tabstop>saveCommentButton</tabstop>
   <tabstop>cancelComment</tabstop>
-  <tabstop>bugSortCombo</tabstop>
  </tabstops>
  <resources/>
  <connections>
