@@ -25,6 +25,7 @@ setup(
     name='QtBE',
     version=VERSION,
     url='https://github.com/nsmgr8/qtbe',
+    download_url='https://github.com/nsmgr8/qtbe/zipball/{0}'.format(VERSION),
     author='M Nasimul Haque',
     author_email='nasim.haque@gmail.com',
     description='Graphical user interface for bugtracker "Bugs Everywhere" supporting distributed revision control',
