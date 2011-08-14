@@ -143,6 +143,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.load_assignees()
         self.load_targets()
+        n = len(bugs)
+        if n == 0:
+            self.bugsLabel.setText('No bug found')
+        elif n == 1:
+            self.bugsLabel.setText('One bug listed')
+        else:
+            self.bugsLabel.setText('Showing {0} bugs'.format(n))
 
     def load_assignees(self):
         assignees = list(set([unicode(bug.assigned) for bug in self.model.bugs if

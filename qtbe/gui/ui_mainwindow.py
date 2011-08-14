@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtbe/resources/mainwindow.ui'
 #
-# Created: Sun Aug 14 12:38:17 2011
+# Created: Sun Aug 14 12:52:32 2011
 #      by: pyside-uic 0.2.9 running on PySide 1.0.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -47,9 +47,9 @@ class Ui_MainWindow(object):
         self.gridLayout_3 = QtGui.QGridLayout(self.layoutWidget)
         self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
-        self.label_8 = QtGui.QLabel(self.layoutWidget)
-        self.label_8.setObjectName("label_8")
-        self.gridLayout_3.addWidget(self.label_8, 0, 0, 1, 1)
+        self.bugsLabel = QtGui.QLabel(self.layoutWidget)
+        self.bugsLabel.setObjectName("bugsLabel")
+        self.gridLayout_3.addWidget(self.bugsLabel, 0, 0, 1, 1)
         self.bugTable = QtGui.QTableView(self.layoutWidget)
         self.bugTable.setAlternatingRowColors(True)
         self.bugTable.setObjectName("bugTable")
@@ -361,7 +361,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Qt Bugs Everywhere", None, QtGui.QApplication.UnicodeUTF8))
         self.projectTitle.setText(QtGui.QApplication.translate("MainWindow", "Project Title", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_8.setText(QtGui.QApplication.translate("MainWindow", "Bugs", None, QtGui.QApplication.UnicodeUTF8))
+        self.bugsLabel.setText(QtGui.QApplication.translate("MainWindow", "Bugs", None, QtGui.QApplication.UnicodeUTF8))
         self.newBugBox.setTitle(QtGui.QApplication.translate("MainWindow", "Create Bug", None, QtGui.QApplication.UnicodeUTF8))
         self.saveBugButton.setText(QtGui.QApplication.translate("MainWindow", "Save Bug", None, QtGui.QApplication.UnicodeUTF8))
         self.newBugButton.setText(QtGui.QApplication.translate("MainWindow", "New Bug", None, QtGui.QApplication.UnicodeUTF8))

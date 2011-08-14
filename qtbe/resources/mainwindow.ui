@@ -61,7 +61,7 @@
          <widget class="QWidget" name="layoutWidget">
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
-            <widget class="QLabel" name="label_8">
+            <widget class="QLabel" name="bugsLabel">
              <property name="text">
               <string>Bugs</string>
              </property>
