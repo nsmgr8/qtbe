@@ -26,7 +26,7 @@ from models import BugTableModel
 from qtbe.utils import comment_html
 
 from libbe import storage, bug, bugdir
-from libbe.command.depend import get_blocks, add_block, remove_block
+from libbe.command.depend import get_blocks, add_block, remove_block, get_blocked_by
 from libbe.util.utility import handy_time
 from libbe.ui.util.user import get_user_id
 
@@ -54,12 +54,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.action_Open.triggered.connect(self.openProject)
         self.action_Close.triggered.connect(self.closeProject)
         self.bugFilterCombo.currentIndexChanged.connect(self.filter_bugs)
+        self.propertyCombo.currentIndexChanged.connect(self.filter_property)
         self.saveBugButton.clicked.connect(self.create_bug)
         self.saveCommentButton.clicked.connect(self.add_comment)
         self.saveDetailsButton.clicked.connect(self.save_detail)
         self.discardDetailsButton.clicked.connect(self.display_bug)
         self.removeBugButton.clicked.connect(self.remove_bug)
         self.updateAllButton.clicked.connect(self.bulk_update)
+        self.addFilterButton.clicked.connect(self.add_filter)
+        self.cancelFilterButton.clicked.connect(self.clear_filter)
+        self.filterBugsButton.clicked.connect(self.filter_bugs)
 
         self.project = None
         self.model = BugTableModel()
@@ -72,6 +76,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.bugTable.horizontalHeader().setMinimumSectionSize(60)
         self.bugTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.bugTable.selectionModel().selectionChanged.connect(self.select_bug)
+
+        self.customFilterBox.setVisible(False)
 
     def _get_project(self):
         """Getter for project property"""
@@ -89,6 +95,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.projectTitle.setText(path.split(os.path.sep)[-1])
             self._enable_controls()
         self.enable_bug_view(False)
+        self.clear_filter()
     project = property(_get_project, _set_project, doc="the absolute path of the project")
 
     def _enable_controls(self, enable=True):
@@ -115,6 +122,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.newBugButton.setChecked(False)
         self.assignedCombo.clear()
         self.targetCombo.clear()
+        self.bugFilterCombo.setCurrentIndex(0)
 
     def _open_store(self, path, is_new=False):
         """Open the store of the project, initialize the bugdir and load bugs"""
@@ -135,6 +143,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.bd = bugdir.BugDir(store, from_storage=False)
             self.project = path
             self.reload_bugs()
+            self.load_assignees()
+            self.load_targets()
         except storage.ConnectionError as e:
             print e
             message = 'No project found. Would you like to initialize a new project?'
@@ -156,30 +166,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             filter_list = bug.status_values[len(bug.active_status_def):]
         bugs = [b for b in self.bd if b.status in filter_list]
-        bugs.sort(key=lambda x: x.severity)
         self.model.bugs = bugs
         self.current_bug = None
-
-        self.load_assignees()
-        self.load_targets()
         self.bugsLabel.setText(str(len(bugs)))
 
     def load_assignees(self):
         """Find and save all assignees for this project including the current user"""
-        assignees = list(set([unicode(bug.assigned) for bug in self.model.bugs if
+        self.assignees = list(set([unicode(bug.assigned) for bug in self.bd if
             bug.assigned and bug.assigned != EMPTY]))
-        if len(assignees) > 0:
-            if self.user not in assignees:
-                assignees.append(self.user)
-            assignees.sort(key=unicode.lower)
+        if len(self.assignees) > 0:
+            if self.user not in self.assignees:
+                self.assignees.append(self.user)
+            self.assignees.sort(key=unicode.lower)
         else:
-            assignees = [self.user]
+            self.assignees = [self.user]
         self.assignedCombo.clear()
-        self.assignedCombo.addItems([''] + assignees)
+        self.assignedCombo.addItems([''] + self.assignees)
 
     def load_targets(self):
         """Load targets"""
-        self.targets = [b for b in self.model.bugs if b.severity == "target"]
+        self.targets = [b for b in self.bd if b.severity == "target"]
         targets = [unicode(b.summary) for b in self.targets]
         targets.sort(key=unicode.lower)
         self.targetCombo.clear()
@@ -405,10 +411,66 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.removeBugButton.setEnabled(False)
         self.statusbar.showMessage('Removed %s bug(s)' % ', '.join(ids))
 
-    def filter_bugs(self, value):
+    def filter_bugs(self, value=None):
         """Filter bugs on active status"""
-        self.reload_bugs(value == 'active')
-        self.enable_bug_view(False)
+        if not value:
+            bugs = self.bd
+            if self.filter_set:
+                status = self.filter_set.get('status')
+                severity = self.filter_set.get('severity')
+                target = self.filter_set.get('target')
+                assigned = self.filter_set.get('assigned')
+                if target:
+                    for t in self.targets:
+                        if t.summary == target:
+                            target = t
+                            break
+                    bugs = get_blocked_by(self.bd, target)
+                if assigned:
+                    bugs = [b for b in bugs if b.assigned == assigned]
+                if severity:
+                    bugs = [b for b in bugs if b.severity == severity]
+                if status:
+                    bugs = [b for b in bugs if b.status == status]
+            self.model.bugs = bugs
+            self.current_bug = None
+            self.bugsLabel.setText(str(len(bugs)))
+            self.enable_bug_view(False)
+        elif value == 'custom':
+            self.customFilterBox.setVisible(True)
+            self.propertyCombo.setCurrentIndex(0)
+            self.valueCombo.clear()
+            self.valueCombo.addItems(bug.status_values)
+        else:
+            self.clear_filter()
+            self.customFilterBox.setVisible(False)
+            self.reload_bugs(value == 'active')
+            self.enable_bug_view(False)
+
+    def filter_property(self, value):
+        items = {
+            'status': bug.status_values,
+            'severity': bug.severity_values,
+            'target': [t.summary for t in self.targets],
+            'assigned': self.assignees,
+        }[value]
+        self.valueCombo.clear()
+        self.valueCombo.addItems(items)
+
+    def add_filter(self):
+        try:
+            key, value = self.propertyCombo.currentText(), self.valueCombo.currentText()
+            self.filter_set[key] = value
+        except:
+            self.filter_set = {key: value}
+        text = ''
+        for key in self.filter_set:
+            text += '<b>{0}</b>: {1}<br/>'.format(key, self.filter_set[key])
+        self.customFilterLabel.setText(text)
+
+    def clear_filter(self):
+        self.customFilterLabel.setText('Select filters')
+        self.filter_set = None
 
     def confirm_action(self, message):
         """Convenient method for user confirmation on action"""

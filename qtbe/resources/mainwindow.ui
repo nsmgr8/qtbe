@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>971</width>
-    <height>644</height>
+    <height>646</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,17 +60,7 @@
          </property>
          <widget class="QWidget" name="layoutWidget">
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="1" column="0" colspan="4">
-            <widget class="QTableView" name="bugTable">
-             <property name="alternatingRowColors">
-              <bool>true</bool>
-             </property>
-             <property name="sortingEnabled">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0" colspan="4">
+           <item row="3" column="0">
             <widget class="QGroupBox" name="newBugBox">
              <property name="title">
               <string>Create Bug</string>
@@ -102,74 +92,7 @@
              </layout>
             </widget>
            </item>
-           <item row="3" column="0">
-            <widget class="QPushButton" name="newBugButton">
-             <property name="text">
-              <string>New Bug</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_13">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <italic>true</italic>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Version Control:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="2">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="3" column="1">
-            <widget class="QPushButton" name="removeBugButton">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Remove Bug</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1" colspan="2">
-            <widget class="QLabel" name="vcsLabel">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0" colspan="3">
+           <item row="0" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
               <widget class="QLabel" name="bugsLabel_3">
@@ -197,6 +120,11 @@
                  <string>inactive</string>
                 </property>
                </item>
+               <item>
+                <property name="text">
+                 <string>custom</string>
+                </property>
+               </item>
               </widget>
              </item>
              <item>
@@ -220,6 +148,232 @@
               </spacer>
              </item>
             </layout>
+           </item>
+           <item row="4" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <widget class="QPushButton" name="newBugButton">
+               <property name="text">
+                <string>New Bug</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="removeBugButton">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Remove Bug</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item row="5" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <item>
+              <widget class="QLabel" name="label_13">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <italic>true</italic>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Version Control:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="vcsLabel">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <italic>false</italic>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="0">
+            <widget class="QTableView" name="bugTable">
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="customFilterBox">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <property name="spacing">
+               <number>6</number>
+              </property>
+              <property name="sizeConstraint">
+               <enum>QLayout::SetDefaultConstraint</enum>
+              </property>
+              <property name="margin">
+               <number>1</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="customFilterLabel">
+                <property name="font">
+                 <font>
+                  <italic>false</italic>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Select Filters</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_14">
+                <item>
+                 <widget class="QComboBox" name="propertyCombo">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>status</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>severity</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>target</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>assigned</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="valueCombo">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="addFilterButton">
+                  <property name="text">
+                   <string>Add Filter</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_8">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <item>
+                 <widget class="QPushButton" name="filterBugsButton">
+                  <property name="text">
+                   <string>Filter Bugs</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="cancelFilterButton">
+                  <property name="text">
+                   <string>Clear Filters</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_7">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -381,6 +535,12 @@
                <layout class="QHBoxLayout" name="horizontalLayout_7">
                 <item>
                  <widget class="QLabel" name="label_7">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="font">
                    <font>
                     <italic>true</italic>
@@ -701,7 +861,6 @@ p, li { white-space: pre-wrap; }
  </widget>
  <tabstops>
   <tabstop>bugTable</tabstop>
-  <tabstop>newBugButton</tabstop>
   <tabstop>newBugEdit</tabstop>
   <tabstop>saveBugButton</tabstop>
   <tabstop>bugCommentBrowser</tabstop>
@@ -728,22 +887,6 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>399</x>
      <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>newBugButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>newBugBox</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>60</x>
-     <y>552</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>124</x>
-     <y>484</y>
     </hint>
    </hints>
   </connection>
@@ -780,22 +923,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>newBugEdit</sender>
-   <signal>returnPressed()</signal>
-   <receiver>saveBugButton</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>151</x>
-     <y>390</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>224</x>
-     <y>423</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>cancelComment</sender>
    <signal>clicked()</signal>
    <receiver>addCommentButton</receiver>
@@ -812,22 +939,6 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
   <connection>
-   <sender>newBugButton</sender>
-   <signal>clicked()</signal>
-   <receiver>newBugEdit</receiver>
-   <slot>setFocus()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>71</x>
-     <y>467</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>177</x>
-     <y>390</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>addCommentButton</sender>
    <signal>clicked()</signal>
    <receiver>newCommentEdit</receiver>
@@ -840,6 +951,54 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>653</x>
      <y>420</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>newBugButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>newBugBox</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>60</x>
+     <y>552</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>124</x>
+     <y>484</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>newBugEdit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>saveBugButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>151</x>
+     <y>390</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>224</x>
+     <y>423</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>newBugButton</sender>
+   <signal>clicked()</signal>
+   <receiver>newBugEdit</receiver>
+   <slot>setFocus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>71</x>
+     <y>467</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>390</y>
     </hint>
    </hints>
   </connection>

@@ -1,3 +1,6 @@
+assigned: ''
+
+
 creator: Nasimul Haque <nasim.haque@gmail.com>
 
 
@@ -17,7 +20,7 @@ reporter: Nasimul Haque <nasim.haque@gmail.com>
 severity: target
 
 
-status: open
+status: fixed
 
 
 summary: '0.1'
