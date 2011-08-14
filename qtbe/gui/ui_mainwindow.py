@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtbe/resources/mainwindow.ui'
 #
-# Created: Sat Aug 13 01:56:14 2011
+# Created: Sun Aug 14 12:38:17 2011
 #      by: pyside-uic 0.2.9 running on PySide 1.0.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(948, 644)
+        MainWindow.resize(971, 644)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_4 = QtGui.QGridLayout(self.centralwidget)
@@ -53,7 +53,7 @@ class Ui_MainWindow(object):
         self.bugTable = QtGui.QTableView(self.layoutWidget)
         self.bugTable.setAlternatingRowColors(True)
         self.bugTable.setObjectName("bugTable")
-        self.gridLayout_3.addWidget(self.bugTable, 1, 0, 1, 3)
+        self.gridLayout_3.addWidget(self.bugTable, 1, 0, 1, 4)
         self.newBugBox = QtGui.QGroupBox(self.layoutWidget)
         self.newBugBox.setObjectName("newBugBox")
         self.newCommentGrid_2 = QtGui.QGridLayout(self.newBugBox)
@@ -66,7 +66,7 @@ class Ui_MainWindow(object):
         self.newBugEdit = QtGui.QLineEdit(self.newBugBox)
         self.newBugEdit.setObjectName("newBugEdit")
         self.newCommentGrid_2.addWidget(self.newBugEdit, 0, 0, 1, 2)
-        self.gridLayout_3.addWidget(self.newBugBox, 2, 0, 1, 3)
+        self.gridLayout_3.addWidget(self.newBugBox, 2, 0, 1, 4)
         self.newBugButton = QtGui.QPushButton(self.layoutWidget)
         self.newBugButton.setCheckable(True)
         self.newBugButton.setObjectName("newBugButton")
@@ -80,6 +80,15 @@ class Ui_MainWindow(object):
         self.label_13.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_13.setObjectName("label_13")
         self.gridLayout_3.addWidget(self.label_13, 4, 0, 1, 1)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout_3.addItem(spacerItem1, 3, 2, 1, 1)
+        self.bugSortCombo = QtGui.QComboBox(self.layoutWidget)
+        self.bugSortCombo.setObjectName("bugSortCombo")
+        self.gridLayout_3.addWidget(self.bugSortCombo, 0, 2, 1, 1)
+        self.removeBugButton = QtGui.QPushButton(self.layoutWidget)
+        self.removeBugButton.setEnabled(False)
+        self.removeBugButton.setObjectName("removeBugButton")
+        self.gridLayout_3.addWidget(self.removeBugButton, 3, 1, 1, 1)
         self.vcsLabel = QtGui.QLabel(self.layoutWidget)
         font = QtGui.QFont()
         font.setWeight(50)
@@ -89,12 +98,7 @@ class Ui_MainWindow(object):
         self.vcsLabel.setText("")
         self.vcsLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.vcsLabel.setObjectName("vcsLabel")
-        self.gridLayout_3.addWidget(self.vcsLabel, 4, 1, 1, 1)
-        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_3.addItem(spacerItem1, 3, 1, 1, 1)
-        self.bugSortCombo = QtGui.QComboBox(self.layoutWidget)
-        self.bugSortCombo.setObjectName("bugSortCombo")
-        self.gridLayout_3.addWidget(self.bugSortCombo, 0, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.vcsLabel, 4, 1, 1, 2)
         self.layoutWidget1 = QtGui.QWidget(self.splitter)
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.layoutWidget1)
@@ -299,7 +303,7 @@ class Ui_MainWindow(object):
         self.gridLayout_4.addWidget(self.label, 1, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 948, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 971, 25))
         self.menubar.setObjectName("menubar")
         self.menu_File = QtGui.QMenu(self.menubar)
         self.menu_File.setObjectName("menu_File")
@@ -335,6 +339,8 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.addCommentButton, QtCore.SIGNAL("toggled(bool)"), self.bugDetailsBox.setHidden)
         QtCore.QObject.connect(self.newBugEdit, QtCore.SIGNAL("returnPressed()"), self.saveBugButton.click)
         QtCore.QObject.connect(self.cancelComment, QtCore.SIGNAL("clicked()"), self.addCommentButton.toggle)
+        QtCore.QObject.connect(self.newBugButton, QtCore.SIGNAL("clicked()"), self.newBugEdit.setFocus)
+        QtCore.QObject.connect(self.addCommentButton, QtCore.SIGNAL("clicked()"), self.newCommentEdit.setFocus)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.bugTable, self.newBugButton)
         MainWindow.setTabOrder(self.newBugButton, self.newBugEdit)
@@ -360,6 +366,7 @@ class Ui_MainWindow(object):
         self.saveBugButton.setText(QtGui.QApplication.translate("MainWindow", "Save Bug", None, QtGui.QApplication.UnicodeUTF8))
         self.newBugButton.setText(QtGui.QApplication.translate("MainWindow", "New Bug", None, QtGui.QApplication.UnicodeUTF8))
         self.label_13.setText(QtGui.QApplication.translate("MainWindow", "Version Control:", None, QtGui.QApplication.UnicodeUTF8))
+        self.removeBugButton.setText(QtGui.QApplication.translate("MainWindow", "Remove Bug", None, QtGui.QApplication.UnicodeUTF8))
         self.bugTitle.setText(QtGui.QApplication.translate("MainWindow", "Bug Title", None, QtGui.QApplication.UnicodeUTF8))
         self.bugDetailsBox.setTitle(QtGui.QApplication.translate("MainWindow", "Bug Details", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("MainWindow", "Short Name:", None, QtGui.QApplication.UnicodeUTF8))

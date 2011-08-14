@@ -40,6 +40,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.statusCombo.addItems(bug.status_values)
         self.severityCombo.addItems(bug.severity_values)
+        self.statusCombo.insertSeparator(len(bug.active_status_def))
         status_def = bug.active_status_def + bug.inactive_status_def
         tooltip = '\n'.join([': '.join(s) for s in status_def])
         self.statusCombo.setToolTip(tooltip)
@@ -53,6 +54,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.saveCommentButton.clicked.connect(self.add_comment)
         self.saveDetailsButton.clicked.connect(self.save_detail)
         self.discardDetailsButton.clicked.connect(self.display_bug)
+        self.removeBugButton.clicked.connect(self.remove_bug)
 
         self.project = None
         self.model = BugTableModel()
@@ -162,11 +164,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.targetCombo.addItems([''] + targets)
 
     def select_bug(self, new, old):
+        n_select = len(self.bugTable.selectedIndexes())
+        n_column = len(self.model.header)
         try:
             bug = self.model.bugs[new.indexes()[0].row()]
-            self.display_bug(bug)
+            if n_select > n_column:
+                self.enable_bug_view(False)
+                self.current_bug = None
+            else:
+                self.display_bug(bug)
+            self.removeBugButton.setEnabled(True)
         except IndexError:
             self.enable_bug_view(False)
+            self.removeBugButton.setEnabled(False)
+
+    def select_current_bug(self):
+        row = self.model.bugs.index(self.current_bug)
+        self.bugTable.selectRow(row)
 
     def enable_bug_view(self, enable=True):
         self.addCommentButton.setEnabled(enable)
@@ -229,11 +243,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def create_bug(self):
         summary = self.newBugEdit.text().strip()
         if summary:
-            bug = self.bd.new_bug(summary=summary)
-            bug.creator = self.user
-            bug.reporter = self.user
+            self.current_bug = self.bd.new_bug(summary=summary)
+            self.current_bug.creator = self.user
+            self.current_bug.reporter = self.user
+            self.current_bug.save()
             self.reload_bugs()
-            self.display_bug(bug)
+            self.select_current_bug()
             self.newBugEdit.setText('')
             self.statusbar.showMessage('A new bug {0} has been '
                     'added'.format(self.current_bug.id.user()))
@@ -255,18 +270,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         assigned = self.assignedCombo.currentText()
         target = self.targetCombo.currentText()
 
-        is_changed = False
-        if self.current_bug.status != status:
-            is_changed = True
-            self.current_bug.status = status
-        if self.current_bug.severity != severity:
-            is_changed = True
-            self.current_bug.severity = severity
-        if self.current_bug.assigned != assigned:
-            is_changed = True
-            self.current_bug.assigned = assigned
+        is_changed = self.current_bug.status != status or \
+            self.current_bug.severity != severity or \
+            self.current_bug.assigned != assigned
 
         if is_changed:
+            self.current_bug.severity = severity
+            self.current_bug.status = status
+            self.current_bug.assigned = assigned
             self.current_bug.save()
             self.model.reset()
             self.load_targets()
@@ -291,6 +302,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         if is_changed:
             self.load_combos()
+            self.select_current_bug()
             self.statusbar.showMessage('Changes to details for the bug {0} '
                     'has been saved'.format(self.current_bug.id.user()))
+
+    def remove_bug(self):
+        indexes = set([index.row() for index in self.bugTable.selectedIndexes()])
+        bugs = [self.model.bugs[index] for index in indexes]
+        ids = []
+        for bug in bugs:
+            ids.append(bug.id.user())
+            self.bd.remove_bug(bug)
+        self.reload_bugs()
+        self.enable_bug_view(False)
+        self.statusbar.showMessage('Removed %s bug(s)' % ', '.join(ids))
 
