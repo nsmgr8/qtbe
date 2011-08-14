@@ -56,6 +56,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.saveDetailsButton.clicked.connect(self.save_detail)
         self.discardDetailsButton.clicked.connect(self.display_bug)
         self.removeBugButton.clicked.connect(self.remove_bug)
+        self.updateAllButton.clicked.connect(self.bulk_update)
 
         self.project = None
         self.model = BugTableModel()
@@ -131,9 +132,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             message = None
         if message:
-            answer = QMessageBox.question(self, self.windowTitle(), message,
-                                          QMessageBox.Ok | QMessageBox.Cancel)
-            if answer == QMessageBox.Ok:
+            if self.confirm_action(message):
                 self._open_store(path, not is_new)
 
     def reload_bugs(self, active=True):
@@ -178,14 +177,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if n_select > n_column:
                 self.enable_bug_view(False)
                 self.current_bug = None
+                self.updateAllButton.setEnabled(True)
             else:
                 self.display_bug(bug)
+                self.updateAllButton.setEnabled(False)
             self.removeBugButton.setEnabled(True)
         except IndexError:
             self.enable_bug_view(False)
             self.removeBugButton.setEnabled(False)
 
-    def select_current_bug(self):
+    def select_current_bug(self, bug=None):
+        if bug:
+            self.current_bug = bug
         row = self.model.bugs.index(self.current_bug)
         self.bugTable.selectRow(row)
 
@@ -203,6 +206,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.assignedCombo.setCurrentIndex(0)
         self.targetCombo.setCurrentIndex(0)
         self.addCommentButton.setChecked(False)
+        self.updateAllButton.setEnabled(False)
         if not enable:
             self.current_bug = None
 
@@ -229,6 +233,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.bugCommentBrowser.setHtml(comments)
 
     def load_combos(self):
+        if not self.current_bug:
+            return
         target = ''
         bug = self.current_bug
         blocks = get_blocks(self.bd, bug)
@@ -252,12 +258,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def create_bug(self):
         summary = self.newBugEdit.text().strip()
         if summary:
-            self.current_bug = self.bd.new_bug(summary=summary)
-            self.current_bug.creator = self.user
-            self.current_bug.reporter = self.user
-            self.current_bug.save()
+            bug = self.bd.new_bug(summary=summary)
+            bug.creator = self.user
+            bug.reporter = self.user
+            bug.save()
             self.reload_bugs()
-            self.select_current_bug()
+            self.select_current_bug(bug)
             self.newBugEdit.setText('')
             self.statusbar.showMessage('A new bug {0} has been '
                     'added'.format(self.current_bug.id.user()))
@@ -315,18 +321,62 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.statusbar.showMessage('Changes to details for the bug {0} '
                     'has been saved'.format(self.current_bug.id.user()))
 
+    def bulk_update(self):
+        if not self.confirm_action('Are you sure to update all selected bugs?'):
+            return
+        indexes = set([index.row() for index in self.bugTable.selectedIndexes()])
+        bugs = [self.model.bugs[index] for index in indexes]
+
+        status = self.statusCombo.currentText()
+        severity = self.severityCombo.currentText()
+        assigned = self.assignedCombo.currentText()
+        target = self.targetCombo.currentText()
+
+        def remove_all_targets():
+            for b in blocks:
+                if b.severity == 'target':
+                    remove_block(b, bug)
+
+        for bug in bugs:
+            bug.severity = severity
+            bug.status = status
+            bug.assigned = assigned
+            bug.save()
+            blocks = get_blocks(self.bd, bug)
+            if not target:
+                remove_all_targets()
+            else:
+                for t in self.targets:
+                    if t.summary == target:
+                        if t not in blocks:
+                            remove_all_targets()
+                            add_block(t, bug)
+                        break
+
+        self.model.reset()
+        self.load_targets()
+        self.load_combos()
+        self.statusbar.showMessage('Updated all selected bugs')
+
     def remove_bug(self):
         indexes = set([index.row() for index in self.bugTable.selectedIndexes()])
         bugs = [self.model.bugs[index] for index in indexes]
+        if len(bugs) > 0 and not self.confirm_action('Are you sure to remove selected bugs?'):
+            return
         ids = []
         for bug in bugs:
             ids.append(bug.id.user())
             self.bd.remove_bug(bug)
         self.reload_bugs()
         self.enable_bug_view(False)
+        self.removeBugButton.setEnabled(False)
         self.statusbar.showMessage('Removed %s bug(s)' % ', '.join(ids))
 
     def filter_bugs(self, value):
         self.reload_bugs(value == 'active')
         self.enable_bug_view(False)
+
+    def confirm_action(self, message):
+        result = QMessageBox.warning(self, self.windowTitle(), message, QMessageBox.Ok | QMessageBox.Cancel)
+        return result == QMessageBox.Ok
 
